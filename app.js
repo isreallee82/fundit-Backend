@@ -111,6 +111,7 @@ app.post("/login", (request, response) => {
     });
 });
 
+// connect database
 dbConnect();
 
 // Curb Cores Error by adding a header here
