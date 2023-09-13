@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const User = require("./db/userModel");
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
-const cors = require("cors");
 
 // body parser configuration
 app.use(bodyParser.json());
@@ -115,9 +114,18 @@ app.post("/login", (request, response) => {
 // connect database
 dbConnect();
 
-// Define a middleware function for CORS
-const corsMiddleware = function (req, res, next) {
-  // Set CORS headers
+// free endpoint
+app.get("/free-endpoint", (request, response) => {
+  response.json({ message: "You are free to access me anytime" });
+});
+
+// authentication endpoint
+app.get("/auth-endpoint", auth, (request, response) => {
+  response.json({ message: "You are authorized to access me" });
+});
+
+// Curb Cores Error by adding a header here
+app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -127,33 +135,7 @@ const corsMiddleware = function (req, res, next) {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
-
-  // Handle allowed origins
-  const allowedOrigins = [
-    "http://localhost:3000",
-    "https://funditt.netlify.app",
-  ];
-  const origin = req.get("origin");
-
-  if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-    res.setHeader("Access-Control-Allow-Origin", origin || "*");
-    next();
-  } else {
-    res.status(403).json({ error: "Not allowed by CORS" });
-  }
-};
-
-// Use the combined CORS middleware
-app.use(corsMiddleware);
-
-// free endpoint
-app.get("/free-endpoint", (request, response) => {
-  response.json({ message: "You are free to access me anytime" });
-});
-
-// authentication endpoint
-app.get("/auth-endpoint", auth, (request, response) => {
-  response.json({ message: "You are authorized to access me" });
+  next();
 });
 
 module.exports = app;
