@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const User = require("./db/userModel");
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
+const cors = require("cors");
 
 // body parser configuration
 app.use(bodyParser.json());
@@ -137,5 +138,21 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+// Allow requests from a specific origin (e.g., your React app's URL)
+const allowedOrigins = ["http://localhost:3000", "https://funditt.netlify.app"]; // Add your frontend URL(s) here
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+// Use the cors middleware with the defined options
+app.use(cors(corsOptions));
 
 module.exports = app;
