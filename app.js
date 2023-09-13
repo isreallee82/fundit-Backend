@@ -18,14 +18,14 @@ app.get("/", (request, response, next) => {
 });
 
 // register endpoint
-app.post("/register", (request, response) => {
+app.post("/register", (req, res, next) => {
   // hash the password
   bcrypt
-    .hash(request.body.password, 10)
+    .hash(req.body.password, 10)
     .then((hashedPassword) => {
       // create a new user instance and collect the data
       const user = new User({
-        email: request.body.email,
+        email: req.body.email,
         password: hashedPassword,
       });
 
@@ -34,14 +34,14 @@ app.post("/register", (request, response) => {
         .save()
         // return success if the new user is added to the database successfully
         .then((result) => {
-          response.status(201).send({
+          res.status(201).send({
             message: "User Created Successfully",
             result,
           });
         })
         // catch error if the new user wasn't added successfully to the database
         .catch((error) => {
-          response.status(500).send({
+          res.status(500).send({
             message: "Error creating user",
             error,
           });
@@ -49,7 +49,7 @@ app.post("/register", (request, response) => {
     })
     // catch error if the password hash isn't successful
     .catch((e) => {
-      response.status(500).send({
+      res.status(500).send({
         message: "Password was not hashed successfully",
         e,
       });
@@ -57,21 +57,21 @@ app.post("/register", (request, response) => {
 });
 
 // login endpoint
-app.post("/login", (request, response) => {
+app.post("/login", (req, res, next) => {
   // check if email exists
-  User.findOne({ email: request.body.email })
+  User.findOne({ email: req.body.email })
 
     // if email exists
     .then((user) => {
       // compare the password entered and the hashed password found
       bcrypt
-        .compare(request.body.password, user.password)
+        .compare(req.body.password, user.password)
 
         // if the passwords match
         .then((passwordCheck) => {
           // check if password matches
           if (!passwordCheck) {
-            return response.status(400).send({
+            return res.status(400).send({
               message: "Passwords does not match",
               error,
             });
@@ -87,8 +87,8 @@ app.post("/login", (request, response) => {
             { expiresIn: "24h" }
           );
 
-          //   return success response
-          response.status(200).send({
+          //   return success res
+          res.status(200).send({
             message: "Login Successful",
             email: user.email,
             token,
@@ -96,7 +96,7 @@ app.post("/login", (request, response) => {
         })
         // catch error if password does not match
         .catch((error) => {
-          response.status(400).send({
+          res.status(400).send({
             message: "Passwords does not match",
             error,
           });
@@ -104,7 +104,7 @@ app.post("/login", (request, response) => {
     })
     // catch error if email does not exist
     .catch((e) => {
-      response.status(404).send({
+      res.status(404).send({
         message: "Email not found",
         e,
       });
@@ -115,13 +115,13 @@ app.post("/login", (request, response) => {
 dbConnect();
 
 // free endpoint
-app.get("/free-endpoint", (request, response) => {
-  response.json({ message: "You are free to access me anytime" });
+app.get("/free-endpoint", (req, res) => {
+  res.json({ message: "You are free to access me anytime" });
 });
 
 // authentication endpoint
-app.get("/auth-endpoint", auth, (request, response) => {
-  response.json({ message: "You are authorized to access me" });
+app.get("/auth-endpoint", auth, (req, res) => {
+  res.json({ message: "You are authorized to access me" });
 });
 
 // Curb Cores Error by adding a header here
