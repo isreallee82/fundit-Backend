@@ -115,18 +115,9 @@ app.post("/login", (request, response) => {
 // connect database
 dbConnect();
 
-// free endpoint
-app.get("/free-endpoint", (request, response) => {
-  response.json({ message: "You are free to access me anytime" });
-});
-
-// authentication endpoint
-app.get("/auth-endpoint", auth, (request, response) => {
-  response.json({ message: "You are authorized to access me" });
-});
-
-// Curb Cores Error by adding a header here
-app.use((req, res, next) => {
+// Define a middleware function for CORS
+const corsMiddleware = function (req, res, next) {
+  // Set CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -136,23 +127,33 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, PATCH, OPTIONS"
   );
-  next();
-});
 
-// Allow requests from a specific origin (e.g., your React app's URL)
-const allowedOrigins = ["http://localhost:3000", "https://funditt.netlify.app"]; // Add your frontend URL(s) here
+  // Handle allowed origins
+  const allowedOrigins = [
+    "http://localhost:3000",
+    "https://funditt.netlify.app",
+  ];
+  const origin = req.get("origin");
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
+    next();
+  } else {
+    res.status(403).json({ error: "Not allowed by CORS" });
+  }
 };
 
-// Use the cors middleware with the defined options
-app.use(cors(corsOptions));
+// Use the combined CORS middleware
+app.use(corsMiddleware);
+
+// free endpoint
+app.get("/free-endpoint", (request, response) => {
+  response.json({ message: "You are free to access me anytime" });
+});
+
+// authentication endpoint
+app.get("/auth-endpoint", auth, (request, response) => {
+  response.json({ message: "You are authorized to access me" });
+});
 
 module.exports = app;
