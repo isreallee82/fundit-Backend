@@ -11,7 +11,7 @@ A simple file management API built with Express, MongoDB, Redis, Bull, and Node.
 
 ### APIs
 
-+ A Google API should be created with at least an email sending scope and a valid URL (e.g.; `http://localhost:5000/`) should be one of the redirect URIs. The `credentials.json` file should be stored in the root directory of this project.
++ A Google API should be created with at least an email sending scope and a valid URL (e.g.; `http://localhost:3000/`) should be one of the redirect URIs. The `credentials.json` file should be stored in the root directory of this project.
 
 ### Environment Variables
 
@@ -20,7 +20,7 @@ The required environment variables should be stored in a file named `.env` and e
 | Name | Required | Description |
 |:-|:-|:-|
 | GOOGLE_MAIL_SENDER | Yes | The email address of the account responsible for sending emails to users. |
-| PORT | No (Default: `5000`)| The port the server should listen at. |
+| PORT | No (Default: `3000`)| The port the server should listen at. |
 | DB_HOST | No (Default: `localhost`)| The database host. |
 | DB_PORT | No (Default: `27017`)| The database port. |
 | DB_DATABASE | No (Default: `Xwurl_database`)| The database name. |
