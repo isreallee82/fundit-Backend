@@ -1,1 +1,1 @@
-web: npm run start-server
+web: nodemon --exec babel-node --presets @babel/preset-env ./index.js
