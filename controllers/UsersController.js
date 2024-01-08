@@ -1,10 +1,8 @@
 import sha1 from 'sha1';
 import { ObjectID } from 'mongodb';
-import Queue from 'bull';
 import dbClient from '../db/file_managerdb';
 import redisClient from '../utils/redis';
-
-const userQueue = new Queue('userQueue', 'redis://127.0.0.1:6379');
+import userQueue from '../worker';
 
 class UsersController {
   static postNew(request, response) {

@@ -4,8 +4,14 @@ import { promises as fs } from 'fs';
 import { ObjectID } from 'mongodb';
 import dbClient from './db/file_managerdb';
 
-const fileQueue = new Queue('fileQueue', 'redis://127.0.0.1:6379');
-const userQueue = new Queue('userQueue', 'redis://127.0.0.1:6379');
+const http = require('http');
+const app = require('./app');
+
+const server = http.createServer(app);
+
+const address = server.address();
+const fileQueue = new Queue('fileQueue', `redis://${address}:6379`);
+const userQueue = new Queue('userQueue', `redis://${address}:6379`);
 
 async function thumbNail(width, localPath) {
   const thumbnail = await imageThumbnail(localPath, { width });

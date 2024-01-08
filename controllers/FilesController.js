@@ -2,17 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { promises as fs } from 'fs';
 import { ObjectID } from 'mongodb';
 import mime from 'mime-types';
-import Queue from 'bull';
 import dbClient from '../db/file_managerdb';
 import redisClient from '../utils/redis';
-
-const http = require('http');
-const app = require('../app');
-
-const server = http.createServer(app);
-
-const address = server.address();
-const fileQueue = new Queue('fileQueue', `redis://${address}:6379`);
+import fileQueue from '../worker';
 
 class FilesController {
   static async getUser(request) {
