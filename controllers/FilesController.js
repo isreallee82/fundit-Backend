@@ -6,7 +6,13 @@ import Queue from 'bull';
 import dbClient from '../db/file_managerdb';
 import redisClient from '../utils/redis';
 
-const fileQueue = new Queue('fileQueue', 'redis://127.0.0.1:6379');
+const http = require('http');
+const app = require('../app');
+
+const server = http.createServer(app);
+
+const address = server.address();
+const fileQueue = new Queue('fileQueue', `redis://${address}:6379`);
 
 class FilesController {
   static async getUser(request) {
