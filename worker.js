@@ -1,9 +1,9 @@
-import Queue from 'bull';
 import imageThumbnail from 'image-thumbnail';
 import { promises as fs } from 'fs';
 import { ObjectID } from 'mongodb';
 import dbClient from './db/file_managerdb';
 
+const Queue = require('bull');
 const http = require('http');
 const app = require('./app');
 
