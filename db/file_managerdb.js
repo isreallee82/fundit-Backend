@@ -6,10 +6,7 @@ class DBClient {
     this.host = env.DB_HOST || 'localhost';
     this.port = env.DB_PORT || 27017;
     this.dbName = env.DB_DATABASE || 'Xwurld_database';
-    MongoClient(process.env.DB_URL || `mongodb://${this.host}:${this.port}`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    new MongoClient(process.env.DB_URL || `mongodb://${this.host}:${this.port}`)
       .connect()
       .then((client) => {
         this.client = client;
